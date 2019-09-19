@@ -1,0 +1,36 @@
+﻿@model NorwegianWhiteJaguar.Model.ViewModel.CustomerViewModel
+
+<h1>Customers</h1>
+<table class="table table-sm table-dark">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Number of Account</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var customer in @Model.Customers)
+    {
+        <tr>
+            <th scope="row" width="10%">@customer.Id</th>
+            <td width="25%">@customer.Name</td>
+            <td width="25%">@customer.Surname</td>
+            <td width="15%" align="center">@(@customer.Accounts?.Count ?? 0)</td>
+            @{
+                if (customer.Accounts != null)
+                {
+                    <td width="25%" align="center">@(Html.ActionLink("Accounts", "Index", "Account", new { customerId = customer.Id }, null))</td>
+                }
+                else
+                {
+                    <td width="25%" align="center">No Account</td>
+                }
+
+            }
+        </tr>
+    }
+    </tbody>
+</table>

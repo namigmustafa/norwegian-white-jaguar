@@ -1,30 +1,39 @@
-﻿using NorwegianWhiteJaguar.Interface.Repository;
+﻿using Conditions;
+using NorwegianWhiteJaguar.Interface.Provider;
+using NorwegianWhiteJaguar.Interface.RequestBuilder;
 using NorwegianWhiteJaguar.Interface.ViewModelBuilder;
-using NorwegianWhiteJaguar.Model.Entities;
-using System;
-using System.Collections.Generic;
+using NorwegianWhiteJaguar.Model.ViewModel;
 
 namespace NorwegianWhiteJaguar.Service.ViewModelBuilder
 {
     public class CustomerViewModelBuilder : ICustomerViewModelBuilder
     {
-        private readonly ICustomerRepository _customerRepository;
-
-        public CustomerViewModelBuilder(ICustomerRepository customerRepository)
+        private readonly ICustomerRequestBuilder _customerRequestBuilder;
+        private readonly ICustomerProvider _customerProvider;
+        
+        public CustomerViewModelBuilder(
+            ICustomerRequestBuilder customerRequestBuilder, 
+            ICustomerProvider customerProvider)
         {
-            _customerRepository = customerRepository;
+            Condition.Requires(customerRequestBuilder, nameof(customerRequestBuilder)).IsNotNull();
+            Condition.Requires(customerProvider, nameof(customerProvider)).IsNotNull();
+
+            _customerRequestBuilder = customerRequestBuilder;
+            _customerProvider = customerProvider;
+           
         }
-
-        public void Create(Customer customer)
+        public CustomerViewModel Build()
         {
-            _customerRepository.Insert(customer);
-        }
+            var request = _customerRequestBuilder.Build();
 
-        public IEnumerable<Customer> Get(int customerId)//TODO should it return Customer or CustomerDto or something like that
-        {
-            var customers = _customerRepository.GetAll();
+            var customerApiCallResult = _customerProvider.Execute(request);
 
-            return customers;
+            var customerViewModelBuilder = new CustomerViewModel
+            {
+                Customers = customerApiCallResult.Customers
+            };
+
+            return customerViewModelBuilder;
         }
     }
 }

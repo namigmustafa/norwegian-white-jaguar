@@ -7,7 +7,7 @@ namespace NorwegianWhiteJaguar.Model.Entities
         public string Number { get; set; }
         public decimal Balance { get; set; }
         public string FriendlyName { get; set; }
-        public ICollection<Transaction> Transactions { get; set; }
+        public List<Transaction> Transactions { get; set; }
         public Customer Customer { get; set; }
     }
 }

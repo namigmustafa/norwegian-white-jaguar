@@ -1,47 +1,46 @@
-﻿using NorwegianWhiteJaguar.Interface.Provider;
-using NorwegianWhiteJaguar.Interface.ViewModelBuilder;
-using NorwegianWhiteJaguar.Model.Entities;
-using System.Collections.Generic;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Http;
+using Conditions;
+using NorwegianWhiteJaguar.Interface.Services;
+using NorwegianWhiteJaguar.Model.Response;
 
 namespace NorwegianWhiteJaguar.WebApi.Controllers
 {
     public class CustomerController : ApiController
     {
-        //private readonly IFileReadWriteProvider _fileReadWriteProvider;
-        private readonly ICustomerViewModelBuilder _customerViewModelBuilder;
-        public CustomerController(ICustomerViewModelBuilder customerViewModelBuilder)
+        private readonly ICustomerService _customerService;
+        
+        public CustomerController(ICustomerService customerService)
         {
-            //_fileReadWriteProvider = fileReadWriteProvider;
-            _customerViewModelBuilder = customerViewModelBuilder;
-        }
-        public IEnumerable<Customer> Get()
-        {
-            //string path = HttpContext.Current.Server.MapPath("~/App_Data/customer.txt");
+            Condition.Requires(customerService, nameof(customerService)).IsNotNull();
 
-            var customers = _customerViewModelBuilder.Get(1);
-
-            return customers;
+            _customerService = customerService;
         }
 
-        public bool Create()
+        [HttpGet]
+        public CustomerResponse ListCustomers()
         {
+            var customers = _customerService.Customers();
 
-            var newCustomer = new Customer
+            var customerResponse = new CustomerResponse
             {
-                Id = 2,
-                Name = "Second",
-                Surname = "Third"
+                Customers = customers
             };
 
-            _customerViewModelBuilder.Create(newCustomer);
+            return customerResponse;
+        }
 
-            
+        [HttpGet]
+        public CustomerAccountsResponse ListCustomerAccounts(int customerId)
+        {
+            var customerAccounts = _customerService.Accounts(customerId);
 
-            
+            var customerAccountsResponse = new CustomerAccountsResponse
+            {
+                CustomerAccounts = customerAccounts.ToList()
+            };
 
-            return true;
+            return customerAccountsResponse;
         }
     }
 }

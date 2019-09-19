@@ -1,9 +1,9 @@
-﻿using NorwegianWhiteJaguar.Model.Entities;
+﻿using NorwegianWhiteJaguar.Model.ViewModel;
 
 namespace NorwegianWhiteJaguar.Interface.ViewModelBuilder
 {
     public interface IAccountViewModelBuilder
     {
-        Account Create(int customerId, float balace);//TODO should it return Account or AccountDto
+        CustomerAccountsViewModel Build(int customerId);
     }
 }

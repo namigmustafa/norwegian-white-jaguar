@@ -6,6 +6,6 @@ namespace NorwegianWhiteJaguar.Model.Entities
     {
         public string Name { get; set; }
         public string Surname { get; set; }
-        public ICollection<Account> Accounts { get; set; } // TODO should it be collection? List
+        public List<Account> Accounts { get; set; }
     }
 }
